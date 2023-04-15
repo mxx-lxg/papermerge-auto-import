@@ -6,6 +6,7 @@ from watchdog.events import PatternMatchingEventHandler
 
 print("papermerge 2.1 auto-importer by mxx-lxg")
 
+path = "./dropzone"
 host = "http://papermerge.home:8000"
 auth_token = "ce61605f9d3c6c8a79d0f88ca7861bbaaa63376c89fcf2c0803b7445b039cbee"
 
@@ -22,7 +23,7 @@ def getInboxId():
 
 def createFile(inbox_id, file_name):
     print("creating file entry in papermerge")
-    clean_file_name = file_name.replace('./', '')
+    clean_file_name = file_name.replace('./dropzone/', '')
     print(clean_file_name)
     r = requests.post(
         host + '/api/nodes/', 
@@ -50,12 +51,12 @@ def createFile(inbox_id, file_name):
 
 def uploadFile(document_id, file_name):
     print("uploading file to papermerge")
-    clean_file_name = file_name.replace('./', '')
+    clean_file_name = file_name.replace('./dropzone/', '')
     print(clean_file_name)
-    r = requests.post(
+    r = requests.put(
         host + '/api/documents/' + document_id + '/upload/' + clean_file_name, 
         headers={'Authorization': 'Token ' + auth_token, 'Content-Type': 'Content-Type: application/pdf', 'Content-Disposition': 'attachment; filename=' + clean_file_name},
-        files={'file': open(file_name, 'r')}
+        files={'file': open(file_name, 'rb')}
     )
     print(r.status_code)
 
@@ -77,7 +78,6 @@ def on_created(event):
 
 file_event_handler.on_created = on_created
 
-path = "."
 go_recursively = False
 file_observer = Observer()
 file_observer.schedule(file_event_handler, path, recursive=go_recursively)

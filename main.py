@@ -1,14 +1,17 @@
 import time
 import json
+import os
 import requests
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 
-print("papermerge 2.1 auto-importer by mxx-lxg")
+print("papermerge 2.1.x auto-importer by mxx-lxg")
+
+print(os.getenv("PAPERMERGE_HOST"))
 
 path = "./dropzone"
-host = "http://papermerge.home:8000"
-auth_token = "ce61605f9d3c6c8a79d0f88ca7861bbaaa63376c89fcf2c0803b7445b039cbee"
+host = os.getenv("PAPERMERGE_HOST")
+auth_token = os.getenv("AUTH_TOKEN")
 
 def getInboxId():
     print("getting inbox id for user")

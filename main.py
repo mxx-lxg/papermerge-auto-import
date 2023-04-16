@@ -49,6 +49,7 @@ def createFile(inbox_id, file_name):
         }))
     print(r.status_code)
     data = r.json()["data"]
+    print(data)
     print(data["id"])
     return data["id"]
 
@@ -62,6 +63,11 @@ def uploadFile(document_id, file_name):
         files={'file': open(file_name, 'rb')}
     )
     print(r.status_code)
+    print(r.json()["data"])
+
+def deleteLocalFile(file_name):
+    print("deleting local file")
+    os.remove(file_name)
 
 
 
@@ -73,10 +79,14 @@ if __name__ == "__main__":
     file_event_handler = PatternMatchingEventHandler(patterns, ignore_patterns, ignore_directories, case_sensitive)
 
 def on_created(event):
-    print(event.src_path + " has appeared!")
+    print("********" + event.src_path + " has appeared! *****************")
     inbox_id = getInboxId()
     document_id = createFile(inbox_id, event.src_path)
     uploadFile(document_id, event.src_path)
+    deleteLocalFile(event.src_path)
+    print("")
+    print("******** done **************************")
+    print("")
 
 
 file_event_handler.on_created = on_created

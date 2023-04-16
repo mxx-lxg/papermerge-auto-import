@@ -54,7 +54,7 @@ def createFile(inbox_id, file_name):
     return data["id"]
 
 def uploadFile(document_id, file_name):
-    print("uploading file to papermerge")
+    print("uploading file to papermerge ("+document_id+")")
     clean_file_name = file_name.replace('./dropzone/', '')
     print(clean_file_name)
     r = requests.put(
@@ -62,6 +62,7 @@ def uploadFile(document_id, file_name):
         headers={'Authorization': 'Token ' + auth_token, 'Content-Type': 'Content-Type: application/pdf', 'Content-Disposition': 'attachment; filename=' + clean_file_name},
         files={'file': open(file_name, 'rb')}
     )
+    print(r)
     print(r.status_code)
     print(r.json()["data"])
 
@@ -78,7 +79,7 @@ if __name__ == "__main__":
     case_sensitive = True
     file_event_handler = PatternMatchingEventHandler(patterns, ignore_patterns, ignore_directories, case_sensitive)
 
-def on_created(event):
+def handleFile(event):
     print("********" + event.src_path + " has appeared! *****************")
     inbox_id = getInboxId()
     document_id = createFile(inbox_id, event.src_path)
@@ -89,7 +90,7 @@ def on_created(event):
     print("")
 
 
-file_event_handler.on_created = on_created
+file_event_handler.on_closed = handleFile
 
 go_recursively = False
 file_observer = Observer()

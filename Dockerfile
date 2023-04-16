@@ -1,4 +1,4 @@
-FROM python:3.9 
+FROM python:3.10 
 # Or any preferred Python version.
 ADD main.py .
 RUN mkdir -p ./dropzone
